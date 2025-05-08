@@ -115,3 +115,42 @@ Message:
         return render(request, 'core/become_agent_success.html')
 
     return render(request, 'core/become_agent.html')
+
+def book_meeting(request):
+    agents = Agent.objects.all()
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        agent_id = request.POST.get("agent")
+        meeting_type = request.POST.get("meeting_type")
+        date = request.POST.get("date")
+        time = request.POST.get("time")
+        notes = request.POST.get("notes")
+
+        selected_agent = Agent.objects.get(id=agent_id)
+
+        message = f"""
+New Meeting Request:
+
+Name: {name}
+Email: {email}
+Preferred Meeting Type: {meeting_type}
+Date: {date}
+Time: {time}
+
+Notes:
+{notes}
+        """
+
+        send_mail(
+            subject=f"Meeting Request from {name}",
+            message=message,
+            from_email=email,
+            recipient_list=[selected_agent.email, 'office@legacylandcompany.org'],
+            fail_silently=False,
+        )
+
+        return render(request, 'core/book_meeting_success.html')
+
+    return render(request, 'core/book_meeting.html', {'agents': agents})

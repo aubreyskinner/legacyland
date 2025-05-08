@@ -25,5 +25,6 @@ urlpatterns = [
     path('properties/', core_views.property_list, name='property_list'),
     path('contact-agent/<int:agent_id>/', views.contact_agent, name='contact_agent'),
     path('become-an-agent/', views.become_agent, name='become_agent'),
+    path('book-meeting/', views.book_meeting, name='book_meeting'),
 
 ]
