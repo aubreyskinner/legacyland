@@ -1,0 +1,332 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,600&display=swap" rel="stylesheet">
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Land Company</title>
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --accent-brown: #8b5e3c;
+            --accent-light: #c9a066;
+            --text-light: #f4f4f4;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        
+        /* NAVBAR */
+        nav {
+            background-color: #141414;
+            font-family: 'Playfair Display', serif;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 2px solid var(--accent-brown);
+        }
+        
+        nav a {
+            color: var(--accent-light);
+            margin: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--text-light);
+            text-shadow: 0 0 10px var(--accent-brown);
+            transform: scale(1.05);
+        }
+        
+        /* GENERAL PAGE CONTENT */
+        .content {
+            padding: 20px;
+        }
+        
+        /* PROPERTY CARD */
+        .property-list-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .property-card {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            background-color: #2a2a2a;
+            border: 1px solid #3b3b3b;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            flex: 1 1 calc(100% - 40px);
+        }
+        
+        .property-card:hover {
+            box-shadow: 0 0 12px var(--accent-brown);
+            transform: translateY(-5px);
+        }
+        
+        .property-card .details {
+            display: none;
+            padding: 10px;
+        }
+        
+        .property-card:hover .details {
+            display: block;
+        }
+        
+        .property-slideshow {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-bottom: 1px solid #444;
+        }
+        
+        .property-slideshow img {
+            width: 100%;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        /* CTA BUTTON */
+        .cta-button {
+            font-size: 1.2em;
+            padding: 10px 25px;
+            font-family: 'Playfair Display', serif;
+            background-color: var(--accent-brown);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            
+        }
+        
+        .cta-button:hover {
+            background-color: var(--accent-light);
+            box-shadow: 0 0 12px var(--accent-light);
+        }
+        
+        /* HERO SECTION */
+        .home-hero-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+        
+        .home-hero-logo img {
+            width: 350px;
+            max-width: 150%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 239, 199, 0.8);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        
+        .home-hero-logo img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgb(255, 255, 255);
+        }
+        
+        .home-hero-text {
+            max-width: 600px;
+            text-align:center;
+        }
+        
+        
+        .home-hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: rgb(255, 246, 220);
+            line-height: 1.2;
+        }
+        
+        .home-hero-text p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: var(--accent-light);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .home-hero-row {
+                flex-direction: column;
+                text-align: center;
+            }
+        
+            .home-hero-text h1 {
+                font-size: 2.5em;
+            }
+        
+            .home-hero-text p {
+                font-size: 1em;
+            }
+        
+            .cta-button {
+                font-size: 1em;
+                padding: 8px 20px;
+            }
+        
+            .property-card {
+                flex: 1 1 100%;
+            }
+        }
+        .home-box {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 40px;
+    background: linear-gradient(145deg, #252525, #1a1a1a);
+    border-radius: 20px;
+    box-shadow:
+        inset 0 0 0 rgba(0, 0, 0, 0),
+        0 0 40px rgba(139, 94, 60, 0.3),
+        0 0 40px rgba(201, 160, 102, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border: 1px solid rgba(201, 160, 102, 0.3);
+}
+.about-section {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #1a1a1a;
+    border-top: 1px solid rgba(201, 160, 102, 0.2);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 20px 20px;
+}
+
+.about-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: var(--accent-light);
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+}
+
+.about-section p {
+    font-size: 1.1em;
+    color: var(--text-light);
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+    font-family: 'Playfair Display', serif;
+}
+
+.home-box:hover {
+    box-shadow:
+        0 0 25px rgba(139, 94, 60, 0.5),
+        0 0 60px rgba(201, 160, 102, 0.3);
+    transform: scale(1.01);
+}
+.agents-section {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #1a1a1a;
+    border-top: 1px solid rgba(201, 160, 102, 0.2);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.agents-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    color: var(--accent-light);
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+}
+
+.agent-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+.agent-card h3 {
+    font-size: 1.4em;
+    color: var(--accent-light);
+    margin-bottom: 5px;
+    font-family: 'Playfair Display', serif;
+}
+
+.agent-card {
+    width: 250px;
+    padding: 20px;
+    background-color: #2a2a2a;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(139, 94, 60, 0.3);
+    transition: transform 0.3s ease;
+}
+.agent-card p {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-light);
+    line-height: 1.5;
+    font-size: 1em;
+}
+.agent-card p:first-of-type {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.agent-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(201, 160, 102, 0.4);
+}
+
+.agent-photo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--accent-light);
+}
+
+.agent-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+        </style>
+        
+      
+</head>
+<body>
+
+    <nav>
+     
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'property_list' %}">Properties</a>
+
+        <a href="#">Become an Agent</a>
+        <a href="#">Book a Meeting</a>
+        <a href="#">Login</a>
+        <a href="#">Sign Up</a>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

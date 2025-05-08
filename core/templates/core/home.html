@@ -1,0 +1,64 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="home-box">
+<div class="home-hero-row">
+    <div class="home-hero-logo">
+        <img src="{% static 'core/images/legacylogo.png' %}" alt="Legacy Land Company Logo">
+    </div>
+    <div class="home-hero-text">
+        <h1>Welcome to Legacy Land Company</h1><hr>
+        <p>
+            Invest in your future with high-quality land listings across Texas, New Mexico, Oklahoma, Colorado, and Nevada.
+            <br>
+            <b>Browse, Connect, and Make Your Legacy.</b></p>
+       <br>
+        <a href="{% url 'property_list' %}" class="cta-button">Browse Properties</a>
+    </div>
+</div>
+</div>
+
+<div class="about-section">
+    <h2>About Legacy Land Company</h2>
+    <p>
+        Legacy Land Company was founded with one goal: to help people invest in land that matters. Our team specializes in finding exceptional rural properties that offer long-term value, natural beauty, and personal freedom.
+    </p>
+    <p>
+        Whether you're looking for your own ranch, a recreational getaway, or a long-term investment, we’re here to guide you through the process with expertise, integrity, and transparency.
+    </p>
+</div>
+<div class="agents-section">
+    <h2>Meet Your Agents</h2>
+    <div class="agent-grid">
+        <div class="agent-card">
+            <div class="agent-photo">
+                <img src="{% static 'core/images/Tanner.jpg' %}" alt="Agent Name">
+            </div>
+            <h3>Tanner Jones</h3>
+            <p>Land Specialist</p>
+            <p>Tanner helps clients navigate the land-buying process with ease, experience, and care.</p>
+        </div>
+        <div class="agent-grid">
+            <div class="agent-card">
+                <div class="agent-photo">
+                    <img src="{% static 'core/images/agent2.jpg' %}" >
+                </div>
+                <h3>Agent 2</h3>
+                <p>Land Specialist</p>
+                <p>Agent 2 helps clients navigate the land-buying process with ease, experience, and care.</p>
+            </div>
+            <div class="agent-grid">
+                <div class="agent-card">
+                    <div class="agent-photo">
+                        <img src="{% static 'core/images/agent3.jpg' %}" >
+                    </div>
+                    <h3>Agent 3</h3>
+                    <p>Land Specialist</p>
+                    <p>Agent 3 helps clients navigate the land-buying process with ease, experience, and care.</p>
+                </div>
+        <!-- You can duplicate this .agent-card for more agents -->
+    </div>
+</div>
+
+{% endblock %}

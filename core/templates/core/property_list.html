@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h1>Available Properties</h1>
+
+<form method="get">
+    <input type="text" name="location" placeholder="Location">
+    <input type="number" name="min_price" placeholder="Min Price">
+    <input type="number" name="max_price" placeholder="Max Price">
+    <input type="number" name="min_acreage" placeholder="Min Acreage">
+    <input type="number" name="max_acreage" placeholder="Max Acreage">
+    <button type="submit">Filter</button>
+</form>
+
+<div class="property-list-wrapper" style="margin-top: 20px;">
+    {% for property in properties %}
+        <div class="property-card">
+            <div class="property-slideshow">
+                {% for image in property.images.all %}
+                    {% if forloop.first %}
+                        <img src="{{ image.image.url }}" alt="{{ property.title }}">
+                    {% endif %}
+                {% endfor %}            
+            </div>
+            <h3>{{ property.title }}</h3>
+            <p>{{ property.description }}</p>
+            <div class="details">
+                <p>Location: {{ property.location }}</p>
+                <p>Price: ${{ property.price }}</p>
+                <p>Acreage: {{ property.acreage }} acres</p>
+                <p>Terms: ${{ property.monthly_payment }} / month for {{ property.term_years }} years</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
