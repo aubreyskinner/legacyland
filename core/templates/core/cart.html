@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="home-box-1">
+    <div class="home-hero-text">
+        <h2 class="agent-heading">Your Cart</h2>
+        {% if cart_items %}
+            <ul>
+                {% for item in cart_items %}
+                    <li>{{ item.property.title }} — ${{ item.property.price }}</li>
+                {% endfor %}
+            </ul>
+            <a href="#" class="cta-button">Proceed to Checkout</a> <!-- Placeholder for Stripe -->
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

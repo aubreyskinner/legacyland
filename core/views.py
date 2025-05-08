@@ -5,6 +5,9 @@ from django.http import HttpResponseRedirect
 from .models import Agent
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from .models import CartItem
 
 def home(request):
     return render(request, 'core/home.html')
@@ -166,3 +169,15 @@ def signup_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'core/signup.html', {'form': form})
+
+
+@login_required
+def add_to_cart(request, property_id):
+    prop = get_object_or_404(Property, id=property_id)
+    CartItem.objects.get_or_create(user=request.user, property=prop)
+    return redirect('view_cart')
+
+@login_required
+def view_cart(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    return render(request, 'core/cart.html', {'cart_items': cart_items})
