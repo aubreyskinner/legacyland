@@ -130,3 +130,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'legacylandinformation@gmail.com'         # Your Gmail address
 EMAIL_HOST_PASSWORD = 'mnpr fvko aghx erit'        # App password (not your Gmail password!)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'

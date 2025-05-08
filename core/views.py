@@ -3,6 +3,8 @@ from .models import Property
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from .models import Agent
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 def home(request):
     return render(request, 'core/home.html')
@@ -154,3 +156,13 @@ Notes:
         return render(request, 'core/book_meeting_success.html')
 
     return render(request, 'core/book_meeting.html', {'agents': agents})
+
+def signup_view(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'core/signup.html', {'form': form})
