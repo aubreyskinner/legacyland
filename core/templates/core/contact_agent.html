@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="contact-form-box">
+    <h2 class="agent-heading">Contact {{ agent.name }}</h2>
+    <form method="post" class="agent-form">
+        {% csrf_token %}
+        <input class="form-field" type="text" name="name" placeholder="Your Name" required><br>
+        <input class="form-field" type="email" name="email" placeholder="Your Email" required><br>
+        <input class="form-field" type="text" name="phone" placeholder="Your Phone"><br>
+        <textarea class="form-field" name="message" placeholder="Your Message" rows="5" required></textarea><br>
+        <button type="submit" class="cta-button">Send Message</button>
+    </form>
+    
+</div>
+{% endblock %}

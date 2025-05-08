@@ -1,0 +1,9 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="contact-form-box">
+    <h2>Message Sent!</h2>
+    <p>Thank you for contacting {{ agent.name }}. They'll be in touch with you shortly.</p>
+    <br>
+    <a href="{% url 'home' %}" class="cta-button">Back to Home</a>
+</div>
+{% endblock %}

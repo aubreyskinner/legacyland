@@ -17,9 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core import views as core_views
+from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', core_views.home, name='home'),
     path('properties/', core_views.property_list, name='property_list'),
+    path('contact-agent/<int:agent_id>/', views.contact_agent, name='contact_agent'),
+    path('become-an-agent/', views.become_agent, name='become_agent'),
+
 ]

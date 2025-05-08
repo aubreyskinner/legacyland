@@ -31,34 +31,36 @@
 <div class="agents-section">
     <h2>Meet Your Agents</h2>
     <div class="agent-grid">
-        <div class="agent-card">
+
+        <a href="{% url 'contact_agent' agent_id=1 %}" class="agent-card">
             <div class="agent-photo">
-                <img src="{% static 'core/images/Tanner.jpg' %}" alt="Agent Name">
+                <img src="{% static 'core/images/Tanner.jpg' %}" alt="Tanner Jones">
             </div>
             <h3>Tanner Jones</h3>
             <p>Land Specialist</p>
             <p>Tanner helps clients navigate the land-buying process with ease, experience, and care.</p>
-        </div>
-        <div class="agent-grid">
-            <div class="agent-card">
-                <div class="agent-photo">
-                    <img src="{% static 'core/images/agent2.jpg' %}" >
-                </div>
-                <h3>Agent 2</h3>
-                <p>Land Specialist</p>
-                <p>Agent 2 helps clients navigate the land-buying process with ease, experience, and care.</p>
+        </a>
+
+        <a href="{% url 'contact_agent' agent_id=2 %}" class="agent-card">
+            <div class="agent-photo">
+                <img src="{% static 'core/images/agent2.jpg' %}" alt="Agent 2">
             </div>
-            <div class="agent-grid">
-                <div class="agent-card">
-                    <div class="agent-photo">
-                        <img src="{% static 'core/images/agent3.jpg' %}" >
-                    </div>
-                    <h3>Agent 3</h3>
-                    <p>Land Specialist</p>
-                    <p>Agent 3 helps clients navigate the land-buying process with ease, experience, and care.</p>
-                </div>
-        <!-- You can duplicate this .agent-card for more agents -->
+            <h3>Agent 2</h3>
+            <p>Land Specialist</p>
+            <p>Agent 2 helps clients navigate the land-buying process with ease, experience, and care.</p>
+        </a>
+
+        <a href="{% url 'contact_agent' agent_id=3 %}" class="agent-card">
+            <div class="agent-photo">
+                <img src="{% static 'core/images/agent3.jpg' %}" alt="Agent 3">
+            </div>
+            <h3>Agent 3</h3>
+            <p>Land Specialist</p>
+            <p>Agent 3 helps clients navigate the land-buying process with ease, experience, and care.</p>
+        </a>
+
     </div>
 </div>
+
 
 {% endblock %}

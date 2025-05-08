@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from .models import Property
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+from .models import Agent
 
 def home(request):
     return render(request, 'core/home.html')
@@ -27,3 +30,88 @@ def property_list(request):
         properties = properties.filter(acreage__lte=max_acreage)
 
     return render(request, 'core/property_list.html', {'properties': properties})
+
+def contact_agent(request, agent_id):
+    agent = get_object_or_404(Agent, id=agent_id)
+
+    if request.method == "POST":
+        # Process form (simplified for now)
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        message = request.POST.get("message")
+        # You'd send an email, save to database, etc. here
+
+        return render(request, 'core/contact_success.html', {"agent": agent})
+
+    return render(request, 'core/contact_agent.html', {"agent": agent})
+
+from django.core.mail import send_mail
+from django.shortcuts import render, get_object_or_404
+from .models import Agent
+
+def contact_agent(request, agent_id):
+    agent = get_object_or_404(Agent, id=agent_id)
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        message = request.POST.get("message")
+
+        full_message = f"""
+You have a new contact from Legacy Land Company:
+
+Name: {name}
+Email: {email}
+Phone: {phone}
+
+Message:
+{message}
+        """
+
+        send_mail(
+            subject=f"New message from {name}",
+            message=full_message,
+            from_email='legacylandinformation@gmail.com',  # Must match settings
+            recipient_list=[agent.email],
+            fail_silently=False,
+        )
+
+        return render(request, 'core/contact_success.html', {"agent": agent})
+
+    return render(request, 'core/contact_agent.html', {"agent": agent})
+
+def become_agent(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        experience = request.POST.get("experience")
+        message = request.POST.get("message")
+
+        full_message = f"""
+New agent application:
+
+Name: {name}
+Email: {email}
+Phone: {phone}
+
+Experience:
+{experience}
+
+Message:
+{message}
+        """
+
+        send_mail(
+            subject=f"Agent Application from {name}",
+            message=full_message,
+            from_email=email,
+            recipient_list=['office@legacylandcompany.org'],
+            fail_silently=False,
+        )
+
+        return render(request, 'core/become_agent_success.html')
+
+    return render(request, 'core/become_agent.html')

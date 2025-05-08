@@ -18,3 +18,14 @@ class PropertyImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.property.title}"
+
+class Agent(models.Model):
+    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default="Land Specialist")
+    bio = models.TextField()
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    photo = models.ImageField(upload_to='agent_photos/')
+    
+    def __str__(self):
+        return self.name
