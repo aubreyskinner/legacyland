@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .models import CartItem
+from django.views.decorators.http import require_POST
 
 def home(request):
     return render(request, 'core/home.html')
@@ -170,14 +171,26 @@ def signup_view(request):
         form = UserCreationForm()
     return render(request, 'core/signup.html', {'form': form})
 
-
+@require_POST
 @login_required
 def add_to_cart(request, property_id):
     prop = get_object_or_404(Property, id=property_id)
-    CartItem.objects.get_or_create(user=request.user, property=prop)
+    option = int(request.POST.get("financing_option"))
+
+    CartItem.objects.create(
+        user=request.user,
+        property=prop,
+        financing_option=option
+    )
     return redirect('view_cart')
 
 @login_required
 def view_cart(request):
     cart_items = CartItem.objects.filter(user=request.user)
     return render(request, 'core/cart.html', {'cart_items': cart_items})
+
+@login_required
+def remove_from_cart(request, item_id):
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    item.delete()
+    return redirect('view_cart')

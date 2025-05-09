@@ -1,18 +1,45 @@
 {% extends "core/base.html" %}
+
 {% block content %}
-<div class="home-box-1">
-    <div class="home-hero-text">
-        <h2 class="agent-heading">Your Cart</h2>
-        {% if cart_items %}
-            <ul>
-                {% for item in cart_items %}
-                    <li>{{ item.property.title }} — ${{ item.property.price }}</li>
-                {% endfor %}
-            </ul>
-            <a href="#" class="cta-button">Proceed to Checkout</a> <!-- Placeholder for Stripe -->
-        {% else %}
-            <p>Your cart is empty.</p>
-        {% endif %}
-    </div>
-</div>
+<h1>Your Cart</h1>
+
+{% if cart_items %}
+    {% for item in cart_items %}
+        <div class="property-card" style="margin-bottom: 30px;">
+            <h3>{{ item.property.title }}</h3>
+            <p><strong>Selected Option:</strong> Option {{ item.financing_option }}</p>
+
+            {% if item.financing_option|stringformat:"s" == "1" %}
+                <p>Monthly: ${{ item.property.monthly_payment_1 }}</p>
+                <p>Term: {{ item.property.term_years_1 }} years</p>
+                <p>Down Payment: ${{ item.property.down_payment_1 }}</p>
+                <p>Total Price: ${{ item.property.total_price_1 }} | Interest: {{ item.property.interest_1 }}%</p>
+                <p><em>{{ item.property.financing_note_1 }}</em></p>
+
+            {% elif item.financing_option|stringformat:"s" == "2" %}
+                <p>Monthly: ${{ item.property.monthly_payment_2 }}</p>
+                <p>Term: {{ item.property.term_years_2 }} years</p>
+                <p>Down Payment: ${{ item.property.down_payment_2 }}</p>
+                <p>Total Price: ${{ item.property.total_price_2 }} | Interest: {{ item.property.interest_2 }}%</p>
+                <p><em>{{ item.property.financing_note_2 }}</em></p>
+
+            {% elif item.financing_option|stringformat:"s" == "3" %}
+                <p>Monthly: ${{ item.property.monthly_payment_3 }}</p>
+                <p>Term: {{ item.property.term_years_3 }} years</p>
+                <p>Down Payment: ${{ item.property.down_payment_3 }}</p>
+                <p>Total Price: ${{ item.property.total_price_3 }} | Interest: {{ item.property.interest_3 }}%</p>
+                <p><em>{{ item.property.financing_note_3 }}</em></p>
+            {% endif %}
+            <form method="post" action="{% url 'remove_from_cart' item.id %}" style="margin-top: 15px;">
+                {% csrf_token %}
+                <button type="submit" class="cta-button" style="background-color: #8b2e2e;">
+                    Remove from Cart
+                </button>
+            </form>
+            
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
 {% endblock %}

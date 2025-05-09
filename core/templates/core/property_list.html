@@ -15,24 +15,67 @@
 <div class="property-list-wrapper" style="margin-top: 20px;">
     {% for property in properties %}
         <div class="property-card">
-            <div class="property-slideshow">
+            <div class="property-slideshow" data-property-id="{{ property.id }}">
                 {% for image in property.images.all %}
-                    {% if forloop.first %}
-                        <img src="{{ image.image.url }}" alt="{{ property.title }}">
-                    {% endif %}
-                {% endfor %}            
+                    <img src="{{ image.image.url }}" alt="{{ property.title }}" class="slide-{{ property.id }}"{% if not forloop.first %} style="display:none;"{% endif %}>
+                {% endfor %}
+                {% if property.images.count > 1 %}
+                    <button onclick="prevSlide('{{ property.id }}')">‹</button>
+                    <button onclick="nextSlide('{{ property.id }}')">›</button>
+                {% endif %}
             </div>
+
             <h3>{{ property.title }}</h3>
             <p>{{ property.description }}</p>
             <div class="details">
-                <p>Location: {{ property.location }}</p>
-                <p>Price: ${{ property.price }}</p>
-                <p>Acreage: {{ property.acreage }} acres</p>
-                <p>Terms: ${{ property.monthly_payment }} / month for {{ property.term_years }} years</p>
+                <p><strong>Location:</strong> {{ property.location }}</p>
+                <p><strong>Acreage:</strong> {{ property.acreage }} acres</p>
+
+                {% if property.monthly_payment_1 %}
+                    <hr>
+                    <p><strong>Option 1:</strong></p>
+                    <p>Monthly: ${{ property.monthly_payment_1 }} | Term: {{ property.term_years_1 }} years</p>
+                    <p>Down Payment: ${{ property.down_payment_1 }}</p>
+                    <p>Total Price: ${{ property.total_price_1 }} | Interest: {{ property.interest_1 }}%</p>
+                    <p><em>{{ property.financing_note_1 }}</em></p>
+                {% endif %}
+
+                {% if property.monthly_payment_2 %}
+                    <hr>
+                    <p><strong>Option 2:</strong></p>
+                    <p>Monthly: ${{ property.monthly_payment_2 }} | Term: {{ property.term_years_2 }} years</p>
+                    <p>Down Payment: ${{ property.down_payment_2 }}</p>
+                    <p>Total Price: ${{ property.total_price_2 }} | Interest: {{ property.interest_2 }}%</p>
+                    <p><em>{{ property.financing_note_2 }}</em></p>
+                {% endif %}
+
+                {% if property.monthly_payment_3 %}
+                    <hr>
+                    <p><strong>Option 3:</strong></p>
+                    <p>Monthly: ${{ property.monthly_payment_3 }} | Term: {{ property.term_years_3 }} years</p>
+                    <p>Down Payment: ${{ property.down_payment_3 }}</p>
+                    <p>Total Price: ${{ property.total_price_3 }} | Interest: {{ property.interest_3 }}%</p>
+                    <p><em>{{ property.financing_note_3 }}</em></p>
+                {% endif %}
             </div>
 
             {% if user.is_authenticated %}
-                <a href="{% url 'add_to_cart' property.id %}" class="cta-button">Add to Cart</a>
+                <form method="post" action="{% url 'add_to_cart' property.id %}">
+                    {% csrf_token %}
+                    <label for="financing_option_{{ property.id }}">Select Financing Option:</label>
+                    <select name="financing_option" id="financing_option_{{ property.id }}" required>
+                        {% if property.monthly_payment_1 %}
+                            <option value="1">Option 1</option>
+                        {% endif %}
+                        {% if property.monthly_payment_2 %}
+                            <option value="2">Option 2</option>
+                        {% endif %}
+                        {% if property.monthly_payment_3 %}
+                            <option value="3">Option 3</option>
+                        {% endif %}
+                    </select>
+                    <button type="submit" class="cta-button">Add to Cart</button>
+                </form>
             {% else %}
                 <p><a href="{% url 'login' %}">Log in</a> to add to cart</p>
             {% endif %}

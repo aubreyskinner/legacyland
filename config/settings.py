@@ -133,3 +133,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+MEDIA_ROOT = BASE_DIR / 'core' / 'media'
+MEDIA_URL = '/media/'
+# or os.path.join(BASE_DIR, 'media')
