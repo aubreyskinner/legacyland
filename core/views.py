@@ -230,6 +230,9 @@ class CreateCheckoutSessionView(View):
 
         if not cart_items.exists():
             return JsonResponse({'error': 'Cart is empty'}, status=400)
+        print("Cart items:", cart_items)
+        for item in cart_items:
+             print("Item:", item, "Down payment:", item.get_down_payment_amount())
 
         # Assume you already calculate `total_due_today` in your view_cart
         total_due_today = sum(item.get_down_payment_amount() for item in cart_items)
