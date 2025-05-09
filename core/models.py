@@ -55,7 +55,15 @@ class Agent(models.Model):
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    financing_option = models.IntegerField(choices=[(1, 'Option 1'), (2, 'Option 2'), (3, 'Option 3')])
+    financing_option = models.IntegerField()
 
-    def __str__(self):
-        return f"{self.user.username} - {self.property.title} (Option {self.financing_option})"
+    # 💡 Add this method:
+    def get_down_payment_amount(self):
+        option = str(self.financing_option)
+        if option == "1":
+            return self.property.down_payment_1
+        elif option == "2":
+            return self.property.down_payment_2
+        elif option == "3":
+            return self.property.down_payment_3
+        return 0

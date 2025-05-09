@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from core.views import CreateCheckoutSessionView, success_view, cancel_view
 from django.urls import path
 from core import views as core_views
 from core import views
@@ -37,7 +38,9 @@ urlpatterns = [
     path('add-to-cart/<int:property_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/', views.view_cart, name='view_cart'),
     path('remove-from-cart/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
-    path('checkout/', views.checkout, name='checkout'),
     path('terms/', TemplateView.as_view(template_name='core/terms.html'), name='terms'),
+    path('create-checkout-session/', CreateCheckoutSessionView.as_view(), name='create_checkout_session'),
+    path('success/', success_view, name='checkout_success'),
+    path('cancel/', cancel_view, name='checkout_cancel'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

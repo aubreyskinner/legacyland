@@ -9,6 +9,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .models import CartItem
 from django.views.decorators.http import require_POST
+import stripe
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.views import View
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def home(request):
     return render(request, 'core/home.html')
@@ -199,7 +207,8 @@ def view_cart(request):
 
     return render(request, 'core/cart.html', {
         'cart_items': cart_items,
-        'total_due_today': total_due_today
+        'total_due_today': total_due_today,
+        'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,  # ✅ this is critical
     })
 
 
@@ -213,3 +222,41 @@ def remove_from_cart(request, item_id):
 def checkout(request):
     # Placeholder: Implement payment logic or success page later
     return render(request, 'core/checkout_success.html')
+
+class CreateCheckoutSessionView(View):
+    def post(self, request, *args, **kwargs):
+        # Step 1: Recalculate cart total for this user
+        cart_items = CartItem.objects.filter(user=request.user)  # Adjust to your model
+
+        if not cart_items.exists():
+            return JsonResponse({'error': 'Cart is empty'}, status=400)
+
+        # Assume you already calculate `total_due_today` in your view_cart
+        total_due_today = sum(item.get_down_payment_amount() for item in cart_items)
+
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': 'Property Purchase',
+                        },
+                        'unit_amount': int(total_due_today * 100),  # 💰 convert to cents
+                    },
+                    'quantity': 1,
+                }],
+                mode='payment',
+                success_url='http://127.0.0.1:8000/success/',
+                cancel_url='http://127.0.0.1:8000/cancel/',
+            )
+            return JsonResponse({'id': checkout_session.id})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+        
+def success_view(request):
+    return render(request, 'core/checkout_success.html')
+
+def cancel_view(request):
+    return render(request, 'core/checkout_cancel.html')

@@ -137,3 +137,4 @@ LOGOUT_REDIRECT_URL = 'home'
 MEDIA_ROOT = BASE_DIR / 'core' / 'media'
 MEDIA_URL = '/media/'
 # or os.path.join(BASE_DIR, 'media')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')

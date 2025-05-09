@@ -45,32 +45,40 @@
         <h2 style="color: var(--accent-light);">Total Due Today</h2>
         <p style="font-size: 1.5em; color: white;"><strong>${{ total_due_today|floatformat:2 }}</strong></p>
 
-        <form method="post" action="{% url 'checkout' %}" id="checkout-form">
-            {% csrf_token %}
+        <label style="display: block; margin: 10px 0;">
+            <input type="checkbox" id="terms-checkbox">
+            I agree to the <a href="{% url 'terms' %}" target="_blank">Terms & Conditions</a>
+        </label>
 
-            <label style="display: block; margin: 10px 0;">
-                <input type="checkbox" id="terms-checkbox">
-                I agree to the <a href="{% url 'terms' %}">Terms & Conditions</a>
-
-            </label>
-
-            <button type="submit" class="cta-button" id="checkout-button" style="margin-top: 10px;" disabled>
-                Proceed to Final Checkout
-            </button>
-        </form>
+        <button type="button" class="cta-button" id="checkout-button" style="margin-top: 10px;" disabled>
+            Proceed to Final Checkout
+        </button>
     </div>
 
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        const checkoutButton = document.getElementById('checkout-button');
+        const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+
+        termsCheckbox.addEventListener('change', function () {
+            checkoutButton.disabled = !this.checked;
+        });
+
+        checkoutButton.addEventListener('click', function () {
+            fetch("{% url 'create_checkout_session' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            })
+            .then(response => response.json())
+            .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+            .catch(error => console.error('Stripe checkout error:', error));
+        });
+    </script>
 {% else %}
     <p>Your cart is empty.</p>
 {% endif %}
-
-<script>
-    const termsCheckbox = document.getElementById('terms-checkbox');
-    const checkoutButton = document.getElementById('checkout-button');
-
-    termsCheckbox.addEventListener('change', function () {
-        checkoutButton.disabled = !this.checked;
-    });
-</script>
 
 {% endblock %}
