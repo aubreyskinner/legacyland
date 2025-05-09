@@ -30,16 +30,47 @@
                 <p>Total Price: ${{ item.property.total_price_3 }} | Interest: {{ item.property.interest_3 }}%</p>
                 <p><em>{{ item.property.financing_note_3 }}</em></p>
             {% endif %}
+
             <form method="post" action="{% url 'remove_from_cart' item.id %}" style="margin-top: 15px;">
                 {% csrf_token %}
                 <button type="submit" class="cta-button" style="background-color: #8b2e2e;">
                     Remove from Cart
                 </button>
             </form>
-            
         </div>
     {% endfor %}
+
+    <!-- Cart summary and final checkout -->
+    <div class="cart-summary" style="margin-top: 40px; padding: 20px; border: 2px solid var(--accent-brown); border-radius: 10px; background-color: #1a1a1a;">
+        <h2 style="color: var(--accent-light);">Total Due Today</h2>
+        <p style="font-size: 1.5em; color: white;"><strong>${{ total_due_today|floatformat:2 }}</strong></p>
+
+        <form method="post" action="{% url 'checkout' %}" id="checkout-form">
+            {% csrf_token %}
+
+            <label style="display: block; margin: 10px 0;">
+                <input type="checkbox" id="terms-checkbox">
+                I agree to the <a href="{% url 'terms' %}">Terms & Conditions</a>
+
+            </label>
+
+            <button type="submit" class="cta-button" id="checkout-button" style="margin-top: 10px;" disabled>
+                Proceed to Final Checkout
+            </button>
+        </form>
+    </div>
+
 {% else %}
     <p>Your cart is empty.</p>
 {% endif %}
+
+<script>
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const checkoutButton = document.getElementById('checkout-button');
+
+    termsCheckbox.addEventListener('change', function () {
+        checkoutButton.disabled = !this.checked;
+    });
+</script>
+
 {% endblock %}

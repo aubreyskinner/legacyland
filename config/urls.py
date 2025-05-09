@@ -21,6 +21,8 @@ from core import views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,5 +37,7 @@ urlpatterns = [
     path('add-to-cart/<int:property_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/', views.view_cart, name='view_cart'),
     path('remove-from-cart/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('terms/', TemplateView.as_view(template_name='core/terms.html'), name='terms'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

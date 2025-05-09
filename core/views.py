@@ -187,10 +187,29 @@ def add_to_cart(request, property_id):
 @login_required
 def view_cart(request):
     cart_items = CartItem.objects.filter(user=request.user)
-    return render(request, 'core/cart.html', {'cart_items': cart_items})
+
+    total_due_today = 0
+    for item in cart_items:
+        if item.financing_option == 1:
+            total_due_today += item.property.down_payment_1 or 0
+        elif item.financing_option == 2:
+            total_due_today += item.property.down_payment_2 or 0
+        elif item.financing_option == 3:
+            total_due_today += item.property.down_payment_3 or 0
+
+    return render(request, 'core/cart.html', {
+        'cart_items': cart_items,
+        'total_due_today': total_due_today
+    })
+
 
 @login_required
 def remove_from_cart(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     item.delete()
     return redirect('view_cart')
+
+@login_required
+def checkout(request):
+    # Placeholder: Implement payment logic or success page later
+    return render(request, 'core/checkout_success.html')
