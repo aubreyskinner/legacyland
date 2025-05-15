@@ -9,7 +9,7 @@
             {% csrf_token %}
             <input class="form-field" type="text" name="name" placeholder="Your Name" required>
             <input class="form-field" type="email" name="email" placeholder="Your Email" required>
-
+            <input class="form-field" type="phone" name="phone" placeholder="Your Phone Number" required>
             <select class="form-field" name="agent" required>
                 <option value="" disabled selected>Select Agent</option>
                 {% for agent in agents %}
