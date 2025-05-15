@@ -15,14 +15,12 @@
                 <p>Down Payment: ${{ item.property.down_payment_1 }}</p>
                 <p>Total Price: ${{ item.property.total_price_1 }} | Interest: {{ item.property.interest_1 }}%</p>
                 <p><em>{{ item.property.financing_note_1 }}</em></p>
-
             {% elif item.financing_option|stringformat:"s" == "2" %}
                 <p>Monthly: ${{ item.property.monthly_payment_2 }}</p>
                 <p>Term: {{ item.property.term_years_2 }} years</p>
                 <p>Down Payment: ${{ item.property.down_payment_2 }}</p>
                 <p>Total Price: ${{ item.property.total_price_2 }} | Interest: {{ item.property.interest_2 }}%</p>
                 <p><em>{{ item.property.financing_note_2 }}</em></p>
-
             {% elif item.financing_option|stringformat:"s" == "3" %}
                 <p>Monthly: ${{ item.property.monthly_payment_3 }}</p>
                 <p>Term: {{ item.property.term_years_3 }} years</p>
@@ -31,54 +29,91 @@
                 <p><em>{{ item.property.financing_note_3 }}</em></p>
             {% endif %}
 
+            <!-- ✅ Remove from Cart -->
             <form method="post" action="{% url 'remove_from_cart' item.id %}" style="margin-top: 15px;">
                 {% csrf_token %}
                 <button type="submit" class="cta-button" style="background-color: #8b2e2e;">
                     Remove from Cart
                 </button>
             </form>
+
+            <!-- ✅ Buyer Verification Form -->
+            <form method="post" enctype="multipart/form-data" action="{% url 'verify_and_checkout' item.id %}" id="verify-form-{{ item.id }}">
+                {% csrf_token %}
+
+                <div class="cart-form-group">
+                    <label for="buyer_name_{{ item.id }}">Full Legal Name</label>
+                    <input type="text" id="buyer_name_{{ item.id }}" name="buyer_name" required oninput="validateForm('{{ item.id }}')">
+                </div>
+
+                <div class="cart-form-group">
+                    <label for="buyer_email_{{ item.id }}">Email</label>
+                    <input type="email" id="buyer_email_{{ item.id }}" name="buyer_email" required oninput="validateForm('{{ item.id }}')">
+                </div>
+
+                <div class="cart-form-group">
+                    <label for="buyer_phone_{{ item.id }}">Phone Number</label>
+                    <input type="text" id="buyer_phone_{{ item.id }}" name="buyer_phone" required oninput="validateForm('{{ item.id }}')">
+                </div>
+
+                <div class="cart-form-group">
+                    <label for="id_document_{{ item.id }}">Upload Government ID</label>
+                    <input type="file" id="id_document_{{ item.id }}" name="id_document" accept=".jpg,.jpeg,.png,.pdf" required onchange="validateForm('{{ item.id }}')">
+                </div>
+
+                <div class="cart-form-group">
+                    <label for="typed_signature_{{ item.id }}">Typed Signature</label>
+                    <input type="text" id="typed_signature_{{ item.id }}" name="typed_signature" placeholder="Full Name" required>
+                </div>
+
+                <div class="cart-form-check">
+                    <label>
+                        <input type="checkbox" name="agree_terms" required>
+                        I agree to the Terms & Conditions and understand this submission acts as my digital signature.
+                    </label>
+                </div>
+
+                <button type="submit" class="cta-button">
+                    Submit Verification
+                </button>
+            </form>
+
+            <button id="checkout-btn-{{ item.id }}" class="cta-button" style="display: none;">
+                Proceed to Payment
+            </button>
         </div>
     {% endfor %}
 
-    <!-- Cart summary and final checkout -->
+    <!-- ✅ Cart summary -->
     <div class="cart-summary" style="margin-top: 40px; padding: 20px; border: 2px solid var(--accent-brown); border-radius: 10px; background-color: #1a1a1a;">
         <h2 style="color: var(--accent-light);">Total Due Today</h2>
         <p style="font-size: 1.5em; color: white;"><strong>${{ total_due_today|floatformat:2 }}</strong></p>
-
-        <label style="display: block; margin: 10px 0;">
-            <input type="checkbox" id="terms-checkbox">
-            I agree to the <a href="{% url 'terms' %}" target="_blank">Terms & Conditions</a>
-        </label>
-
-        <button type="button" class="cta-button" id="checkout-button" style="margin-top: 10px;" disabled>
-            Proceed to Final Checkout
-        </button>
+        <p style="font-style: italic;">*Your checkout will begin after verification is submitted.</p>
     </div>
 
-    <script src="https://js.stripe.com/v3/"></script>
-    <script>
-        const termsCheckbox = document.getElementById('terms-checkbox');
-        const checkoutButton = document.getElementById('checkout-button');
-        const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
-
-        termsCheckbox.addEventListener('change', function () {
-            checkoutButton.disabled = !this.checked;
-        });
-
-        checkoutButton.addEventListener('click', function () {
-            fetch("{% url 'create_checkout_session' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                },
-            })
-            .then(response => response.json())
-            .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
-            .catch(error => console.error('Stripe checkout error:', error));
-        });
-    </script>
 {% else %}
     <p>Your cart is empty.</p>
 {% endif %}
+{% endblock %}
 
+{% block extra_scripts %}
+<script>
+function validateForm(itemId) {
+    const form = document.getElementById(`verify-form-${itemId}`);
+    const inputs = form.querySelectorAll('[required]');
+    let isValid = true;
+
+    for (let input of inputs) {
+        if ((input.type === 'checkbox' && !input.checked) || !input.value) {
+            isValid = false;
+            break;
+        }
+    }
+
+    const checkoutBtn = document.getElementById(`checkout-btn-${itemId}`);
+    if (checkoutBtn) {
+        checkoutBtn.style.display = isValid ? 'inline-block' : 'none';
+    }
+}
+</script>
 {% endblock %}

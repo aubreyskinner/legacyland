@@ -3,6 +3,8 @@ from .models import Property
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from .models import Agent
+from django.core.files.base import ContentFile
+import base64
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -15,6 +17,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views import View
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+from django.core.mail import EmailMessage
+
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -169,97 +177,172 @@ Notes:
 
     return render(request, 'core/book_meeting.html', {'agents': agents})
 
-def signup_view(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'core/signup.html', {'form': form})
-
 @require_POST
-@login_required
 def add_to_cart(request, property_id):
     prop = get_object_or_404(Property, id=property_id)
     option = int(request.POST.get("financing_option"))
 
     CartItem.objects.create(
-        user=request.user,
         property=prop,
-        financing_option=option
+        financing_option=option,
+        session_key=request.session.session_key or request.session.save() or request.session.session_key
     )
     return redirect('view_cart')
 
-@login_required
+
+
 def view_cart(request):
-    cart_items = CartItem.objects.filter(user=request.user)
+    session_key = request.session.session_key or request.session.save() or request.session.session_key
+    cart_items = CartItem.objects.filter(session_key=session_key)
 
     total_due_today = 0
     for item in cart_items:
-        if item.financing_option == 1:
-            total_due_today += item.property.down_payment_1 or 0
-        elif item.financing_option == 2:
-            total_due_today += item.property.down_payment_2 or 0
-        elif item.financing_option == 3:
-            total_due_today += item.property.down_payment_3 or 0
+        total_due_today += item.get_down_payment_amount()
 
     return render(request, 'core/cart.html', {
         'cart_items': cart_items,
         'total_due_today': total_due_today,
-        'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,  # ✅ this is critical
+        'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
     })
 
 
-@login_required
 def remove_from_cart(request, item_id):
-    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    session_key = request.session.session_key or request.session.save() or request.session.session_key
+    item = get_object_or_404(CartItem, id=item_id, session_key=session_key)
     item.delete()
     return redirect('view_cart')
 
-@login_required
+
+
 def checkout(request):
     # Placeholder: Implement payment logic or success page later
     return render(request, 'core/checkout_success.html')
 
-class CreateCheckoutSessionView(View):
-    def post(self, request, *args, **kwargs):
-        # Step 1: Recalculate cart total for this user
-        cart_items = CartItem.objects.filter(user=request.user)  # Adjust to your model
+@require_POST
+def create_checkout_session(request, cart_id):
+    cart_item = get_object_or_404(CartItem, id=cart_id)
 
-        if not cart_items.exists():
-            return JsonResponse({'error': 'Cart is empty'}, status=400)
-        print("Cart items:", cart_items)
-        for item in cart_items:
-             print("Item:", item, "Down payment:", item.get_down_payment_amount())
+    amount = cart_item.get_down_payment_amount()
 
-        # Assume you already calculate `total_due_today` in your view_cart
-        total_due_today = sum(item.get_down_payment_amount() for item in cart_items)
-
-        try:
-            checkout_session = stripe.checkout.Session.create(
-                payment_method_types=['card'],
-                line_items=[{
-                    'price_data': {
-                        'currency': 'usd',
-                        'product_data': {
-                            'name': 'Property Purchase',
-                        },
-                        'unit_amount': int(total_due_today * 100),  # 💰 convert to cents
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': cart_item.property.title,
                     },
-                    'quantity': 1,
-                }],
-                mode='payment',
-                success_url='http://127.0.0.1:8000/success/',
-                cancel_url='http://127.0.0.1:8000/cancel/',
-            )
-            return JsonResponse({'id': checkout_session.id})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+                    'unit_amount': int(amount * 100),
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='http://127.0.0.1:8000/success/',
+            cancel_url='http://127.0.0.1:8000/cancel/',
+            metadata={
+                'buyer_name': cart_item.buyer_name,
+                'property_id': cart_item.property.id
+            }
+        )
+        return JsonResponse({'id': checkout_session.id})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
         
 def success_view(request):
     return render(request, 'core/checkout_success.html')
 
 def cancel_view(request):
     return render(request, 'core/checkout_cancel.html')
+
+@require_POST
+def verify_and_checkout(request, cart_id):
+    cart_item = get_object_or_404(CartItem, id=cart_id)
+
+    cart_item.buyer_name = request.POST.get('buyer_name')
+    cart_item.buyer_email = request.POST.get('buyer_email')
+    cart_item.buyer_phone = request.POST.get('buyer_phone')
+    cart_item.agreed_to_terms = bool(request.POST.get('agree_terms'))
+
+    # New: typed signature, IP, timestamp
+    cart_item.typed_signature = request.POST.get('typed_signature')
+    cart_item.signature_ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+    cart_item.signature_timestamp = timezone.now()
+
+    # Handle ID document upload
+    uploaded_file = request.FILES.get('id_document')
+    if uploaded_file:
+        cart_item.id_document = uploaded_file
+
+    # Optional: Handle base64 canvas signature (if ever restored)
+    signature_data_url = request.POST.get('signature_data')
+    if signature_data_url:
+        try:
+            format, imgstr = signature_data_url.split(';base64,')
+            ext = format.split('/')[-1]
+            signature_file = ContentFile(base64.b64decode(imgstr), name=f'signature_{cart_item.id}.{ext}')
+            cart_item.signature_image = signature_file
+        except Exception:
+            pass  # Fail silently if base64 is malformed
+
+    cart_item.save()
+
+    # Email notification
+    body = f"""
+Successfully submitted buyer verification information:
+
+Name: {cart_item.buyer_name}
+Email: {cart_item.buyer_email}
+Phone: {cart_item.buyer_phone}
+Property: {cart_item.property.title}
+Option: {cart_item.financing_option}
+
+Digital Signature: {cart_item.typed_signature}
+Signed At: {cart_item.signature_timestamp}
+IP Address: {cart_item.signature_ip}
+    """
+
+    email = EmailMessage(
+        subject=f"Buyer Verification: {cart_item.buyer_name}",
+        body=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=['office@legacylandcompany.org'],
+        cc=[cart_item.buyer_email] if cart_item.buyer_email else []
+    )
+
+    if uploaded_file:
+        uploaded_file.seek(0)
+        email.attach(uploaded_file.name, uploaded_file.read(), uploaded_file.content_type)
+
+    if cart_item.signature_image:
+        with open(cart_item.signature_image.path, 'rb') as f:
+            email.attach(cart_item.signature_image.name, f.read(), 'image/png')
+
+    email.send(fail_silently=False)
+
+    # ✅ Stripe checkout
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'usd',
+                'unit_amount': int(cart_item.get_down_payment_amount() * 100),
+                'product_data': {
+                    'name': cart_item.property.title,
+                },
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=request.build_absolute_uri('/success/'),
+        cancel_url=request.build_absolute_uri('/cancel/'),
+        metadata={
+            'buyer_name': cart_item.buyer_name,
+            'property_id': cart_item.property.id
+        }
+    )
+
+    return redirect(checkout_session.url)

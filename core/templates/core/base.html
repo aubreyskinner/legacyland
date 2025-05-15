@@ -10,13 +10,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legacy Land Company</title>
     <style>
+.cart-form-group {
+    margin-bottom: 15px;
+}
+
+.cart-form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.cart-form-group input[type="text"],
+.cart-form-group input[type="email"],
+.cart-form-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #888;
+    border-radius: 6px;
+    background-color: #1e1e1e;
+    color: white;
+    box-sizing: border-box;
+}
+
+.cart-form-group input[type="text"]:focus,
+.cart-form-group input[type="email"]:focus,
+.cart-form-group input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    box-shadow: 0 0 5px var(--accent-light);
+}
+
+.cart-form-check {
+    margin-top: 15px;
+}
+
+.cart-form-check input {
+    margin-right: 10px;
+}
+
+.property-card form {
+    margin-top: 20px;
+}
+
+.cta-button {
+    margin-top: 15px;
+}
+
+
+
+
         :root {
             --bg-dark: #1e1e1e;
             --accent-brown: #8b5e3c;
             --accent-light: #c9a066;
             --text-light: #f4f4f4;
         }
-        
+        canvas {
+    touch-action: none;
+    cursor: crosshair;
+}
+
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
@@ -463,29 +516,16 @@
         <a href="{% url 'home' %}">
             <img src="{% static 'core/images/legacylogo.png' %}" alt="Legacy Land Company Logo" style="height: 40px; vertical-align: middle; margin-right: 15px;">
         </a>
-        {% if user.is_authenticated %}
-    <div class="dropdown">
-        <span class="nav-link-button">Account ▾</span>
-        <div class="dropdown-content">
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="dropdown-button">Logout</button>
-            </form>
-        </div>
-    </div>
-{% else %}
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'signup' %}">Sign Up</a>
-{% endif %}
+    
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'property_list' %}">Properties</a>
+            <a href="{% url 'become_agent' %}">Become an Agent</a>
+            <a href="{% url 'book_meeting' %}">Book a Meeting</a>
+        </nav>
+        
 
     
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'property_list' %}">Properties</a>
-        <a href="{% url 'become_agent' %}">Become an Agent</a>
-        <a href="{% url 'book_meeting' %}">Book a Meeting</a>
-        
-        
-    </nav>
+       
 
     <div class="content">
         {% block content %}{% endblock %}

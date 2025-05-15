@@ -59,26 +59,23 @@
                 {% endif %}
             </div>
 
-            {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add_to_cart' property.id %}">
-                    {% csrf_token %}
-                    <label for="financing_option_{{ property.id }}">Select Financing Option:</label>
-                    <select name="financing_option" id="financing_option_{{ property.id }}" required>
-                        {% if property.monthly_payment_1 %}
-                            <option value="1">Option 1</option>
-                        {% endif %}
-                        {% if property.monthly_payment_2 %}
-                            <option value="2">Option 2</option>
-                        {% endif %}
-                        {% if property.monthly_payment_3 %}
-                            <option value="3">Option 3</option>
-                        {% endif %}
-                    </select>
-                    <button type="submit" class="cta-button">Add to Cart</button>
-                </form>
-            {% else %}
-                <p><a href="{% url 'login' %}">Log in</a> to add to cart</p>
-            {% endif %}
+            <form method="post" action="{% url 'add_to_cart' property.id %}">
+                {% csrf_token %}
+                <label for="financing_option_{{ property.id }}">Select Financing Option:</label>
+                <select name="financing_option" id="financing_option_{{ property.id }}" required>
+                    {% if property.monthly_payment_1 %}
+                        <option value="1">Option 1</option>
+                    {% endif %}
+                    {% if property.monthly_payment_2 %}
+                        <option value="2">Option 2</option>
+                    {% endif %}
+                    {% if property.monthly_payment_3 %}
+                        <option value="3">Option 3</option>
+                    {% endif %}
+                </select>
+                <button type="submit" class="cta-button">Add to Cart</button>
+            </form>
+            
         </div>
     {% endfor %}
 </div>

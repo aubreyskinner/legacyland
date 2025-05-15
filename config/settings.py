@@ -139,11 +139,9 @@ EMAIL_HOST_USER = 'legacylandinformation@gmail.com'         # Your Gmail address
 EMAIL_HOST_PASSWORD = 'mnpr fvko aghx erit'        # App password (not your Gmail password!)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
 
 MEDIA_ROOT = BASE_DIR / 'core' / 'media'
 MEDIA_URL = '/media/'
 # or os.path.join(BASE_DIR, 'media')
-STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY') 
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')

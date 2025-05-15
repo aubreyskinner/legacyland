@@ -53,17 +53,22 @@ class Agent(models.Model):
         return self.name
     
 class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     financing_option = models.IntegerField()
-
-    # 💡 Add this method:
+    buyer_name = models.CharField(max_length=255)
+    buyer_email = models.EmailField(blank=True)
+    buyer_phone = models.CharField(max_length=20, blank=True)
+    id_document = models.FileField(upload_to='id_uploads/', blank=True, null=True)
+    agreed_to_terms = models.BooleanField(default=False)
+    added_at = models.DateTimeField(auto_now_add=True)
+    session_key = models.CharField(max_length=40, blank=True, null=True)
+    signature_image = models.ImageField(upload_to='signatures/', null=True, blank=True)
+    
     def get_down_payment_amount(self):
-        option = str(self.financing_option)
-        if option == "1":
-            return self.property.down_payment_1
-        elif option == "2":
-            return self.property.down_payment_2
-        elif option == "3":
-            return self.property.down_payment_3
+        if self.financing_option == 1:
+            return self.property.down_payment_1 or 0
+        elif self.financing_option == 2:
+            return self.property.down_payment_2 or 0
+        elif self.financing_option == 3:
+            return self.property.down_payment_3 or 0
         return 0
