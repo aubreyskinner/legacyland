@@ -3,6 +3,7 @@ from .models import Property
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from .models import Agent
+from django.utils import timezone
 from django.core.files.base import ContentFile
 import base64
 from django.contrib.auth.forms import UserCreationForm
