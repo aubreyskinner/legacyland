@@ -114,7 +114,176 @@
             position: relative;
             transition: all 0.3s ease;
         }
-        
+        .process-section {
+    max-width: 900px;
+    font-family: 'Playfair Display', serif;
+    margin: auto;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.intro-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2em;
+    color: #dedede;
+    margin-bottom: 50px;
+}
+
+.timeline {
+    position: relative;
+    border-left: 3px solid #eea700;
+    padding-left: 30px;
+    padding-top: 10px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 60px;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -45px;
+    top: 0;
+    background-color: #eea700;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-content h2 {
+    font-size: 1.4em;
+    font-family: 'Playfair Display', serif;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.timeline-content p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05em;
+    color: #666;
+    line-height: 1.6em;
+    margin: 0;
+}
+
+.cta-button-wrapper {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.cta-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #388e3c;
+}
+
+.contact-section {
+    font-family: 'Playfair Display', serif;
+    max-width: 1000px;
+    margin: auto;
+    padding: 40px;
+    text-align: center;
+}
+
+.facebook-side-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.facebook-left {
+    flex: 1 1 500px;
+    min-width: 300px;
+}
+
+.facebook-frame {
+    width: 100%;
+    height: 600px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.facebook-right {
+    flex: 1 1 300px;
+    min-width: 250px;
+    text-align: left;
+}
+
+.facebook-right h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.facebook-right p {
+    font-size: 1em;
+    margin-bottom: 20px;
+    color: #d3d3d3;
+}
+
+.facebook-link-button {
+    display: inline-block;
+    background-color: #a07000;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.facebook-link-button:hover {
+    background-color: #365899;
+}
+
+.company-info a {
+    color: #a07000; /* Use your brand color or something readable */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.company-info a:hover {
+    text-decoration: underline;
+    color: #365899; /* Slightly darker green on hover */
+}
+
+
+
+
+
+.company-info {
+    margin-top: 40px;
+    font-size: 1.1em;
+}
+
+.company-info p {
+    margin: 5px 0;
+}
+
+.cta-button:hover {
+    background-color: #388e3c;
+}
+
         nav a:hover {
             color: var(--text-light);
             text-shadow: 0 0 10px var(--accent-brown);
@@ -522,9 +691,12 @@
         </a>
     
             <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'process' %}">Our Process</a>
             <a href="{% url 'property_list' %}">Properties</a>
             <a href="{% url 'become_agent' %}">Become an Agent</a>
             <a href="{% url 'book_meeting' %}">Book a Meeting</a>
+            <a href="{% url 'contact' %}">Contact</a>
+
         </nav>
         
 

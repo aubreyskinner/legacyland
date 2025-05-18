@@ -347,3 +347,10 @@ IP Address: {cart_item.signature_ip}
     )
 
     return redirect(checkout_session.url)
+
+
+def process(request):
+    return render(request, 'core/process.html')
+
+def contact(request):
+    return render(request, 'core/contact.html')

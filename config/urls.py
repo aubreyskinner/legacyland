@@ -40,6 +40,7 @@ urlpatterns = [
     path('cancel/', cancel_view, name='checkout_cancel'),
     path('verify-and-checkout/<int:cart_id>/', views.verify_and_checkout, name='verify_and_checkout'),
     path('create-checkout-session/<int:cart_id>/', views.create_checkout_session, name='create_checkout_session'),
-
+    path('process/', views.process, name='process'),
+    path('contact/', views.contact, name='contact'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

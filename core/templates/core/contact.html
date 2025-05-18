@@ -1,0 +1,79 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="contact-section">
+    <h1>Contact Us</h1>
+    <p class="intro-text">
+        Whether you're ready to invest or just have a few questions, we're here to help. Reach out anytime!
+    </p>
+    <div class="facebook-side-section">
+        <div class="facebook-left">
+            <iframe 
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FLegacyLandCompany&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
+                class="facebook-frame"
+                scrolling="yes"
+                frameborder="0"
+                allowfullscreen="true"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+            </iframe>
+        </div>
+    
+        <div class="facebook-right">
+            <h2>Follow Us on Facebook</h2>
+            <p>Stay up to date with our latest listings, land deals, and more.</p>
+            <a href="https://www.facebook.com/LegacyLandCompany" target="_blank" class="facebook-link-button">
+                Visit Our Page
+            </a>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <!-- Agent Cards -->
+    <div class="agents-section">
+        <h2>Talk to Our Agents</h2>
+        <div class="agent-grid">
+
+            <a href="{% url 'contact_agent' agent_id=1 %}" class="agent-card">
+                <div class="agent-photo">
+                    <img src="{% static 'core/images/Tanner.jpg' %}" alt="Tanner Jones">
+                </div>
+                <h3>Tanner Jones</h3>
+                <p>Land Specialist</p>
+            </a>
+
+            <a href="{% url 'contact_agent' agent_id=3 %}" class="agent-card">
+                <div class="agent-photo">
+                    <img src="{% static 'core/images/coltenagent.jpg' %}" alt="Colten Mashburn">
+                </div>
+                <h3>Colten Mashburn</h3>
+                <p>Agent</p>
+            </a>
+
+            <a href="{% url 'contact_agent' agent_id=4 %}" class="agent-card">
+                <div class="agent-photo">
+                    <img src="{% static 'core/images/IMG_4413.jpg' %}" alt="Kristofer Schaffler">
+                </div>
+                <h3>Kristofer Schaffler</h3>
+                <p>Agent</p>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Company Info -->
+    <div class="company-info">
+        <h2>Company Info</h2>
+        <p>Email: <a href="mailto:office@legacylandcompany.org">office@legacylandcompany.org</a></p>
+        <p>Phone: (806) 471-4649</p>
+        <p>Office Hours: Mon–Sun, 9 AM – 9 PM</p>
+    </div>
+</div>
+{% endblock %}

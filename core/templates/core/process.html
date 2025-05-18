@@ -1,0 +1,67 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="process-section">
+    <h1>Our Process</h1>
+    <p class="intro-text">
+        Buying land through Legacy Land Company is simple, transparent, and personalized. Here's what to expect:
+    </p>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-icon">📩</div>
+            <div class="timeline-content">
+                <h2>1. Make an Inquiry</h2>
+                <p>
+                    Reach out through our website, message us on Facebook, or contact an agent directly. We're ready to help.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-icon">📞</div>
+            <div class="timeline-content">
+                <h2>2. Schedule a Call or Zoom</h2>
+                <p>
+                    We’ll walk you through the property details, answer questions, and confirm it's the right fit.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-icon">📝</div>
+            <div class="timeline-content">
+                <h2>3. Sign the Contract</h2>
+                <p>
+                    We send you the purchase agreement electronically. Once signed, your land is officially reserved.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-icon">💳</div>
+            <div class="timeline-content">
+                <h2>4. Complete Checkout</h2>
+                <p>
+                    Upload your government-issued ID and make your first payment through our secure checkout page.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-icon">🏢</div>
+            <div class="timeline-content">
+                <h2>5. Title Company Coordination</h2>
+                <p>
+                    We work with a trusted title company who will handle official documentation and monthly payments going forward.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-button-wrapper">
+        <a href="{% url 'contact' %}" class="cta-button">Contact Us to Get Started</a>
+    </div>
+</div>
+{% endblock %}
